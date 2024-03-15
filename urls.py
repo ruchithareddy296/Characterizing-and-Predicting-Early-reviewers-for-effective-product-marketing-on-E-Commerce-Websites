@@ -1,14 +1,34 @@
-from django.conf.urls import url
+"""CHARACTERIZING_AND_PREDICTING URL Configuration
 
-from admins import views
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/1.11/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.conf.urls import url, include
+    2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
+"""
+from django.conf.urls import url, include
+from django.conf.urls.static import static
+from django.contrib import admin
 
-urlpattern = [
-    url(r'^home/$',views.home,name='home'),
-    url(r'^$',views.index,name='index'),
-    url(r'^upload/products/$',views.uploadproducts,name='uploadproducts'),
-    url(r'^charts/Multivendor-Analysis/(?P<chart_type>\w+)/$',views.charts,name='charts'),
-    url(r'^charts/Knowledge-Based-Opinion/(?P<chart_type>\w+)/$',views.charts1,name='charts1'),
-    url(r'^charts/Region-wise-Opinion-Analysis/(?P<chart_type>\w+)/$',views.charts2,name='charts2'),
-    url(r'^charts/Sentiment-Wise-Analysis/(?P<chart_type>\w+)/$',views.charts3,name='charts3'),
-    url(r'^logout/$',views.logout,name='logout'),
+from CHARACTERIZING_AND_PREDICTING import settings
+
+from admins.urls import urlpattern as admin_urlpatterns
+from user.urls import urlpattern as users_urlpatterns
+from vendor.urls import urlpattern as vendor_urlpatterns
+
+
+urlpatterns = [
+    url(r'^admin/', admin.site.urls),
+    url(r'^admins/',include((admin_urlpatterns,'admins'),namespace='admins'),name='admins'),
+    url(r'',include((users_urlpatterns,'user'),namespace='user'),name='user'),
+    url(r'^vendor/',include((vendor_urlpatterns,'vendor'),namespace='vendor'),name='vendor'),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
